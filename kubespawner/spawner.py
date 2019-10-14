@@ -5,6 +5,7 @@ This module exports `KubeSpawner` class, which is the actual spawner
 implementation that should be used by JupyterHub.
 """
 
+from datetime import datetime
 from functools import partial  # noqa
 import os
 import sys
@@ -70,7 +71,7 @@ class EventReflector(NamespacedResourceReflector):
     def events(self):
         return sorted(
             self.resources.values(),
-            key=lambda x: x.last_timestamp if x.last_timestamp is not None else 0.,
+            key=lambda x: x.last_timestamp if x.last_timestamp is not None else datetime.min,
         )
 
 
