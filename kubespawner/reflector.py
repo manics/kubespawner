@@ -247,7 +247,9 @@ class ResourceReflector(LoggingConfigurable):
 
         # This is an atomic operation on the dictionary!
         initial_resources = json.loads(await initial_resources_raw.read())
-        self.log.debug(f"_list_and_update initial_resources: {initial_resources}")
+        self.log.debug(
+            f"_list_and_update initial_resources: {initial_resources['metadata']}"
+        )
         self.resources = {
             f'{p["metadata"]["namespace"]}/{p["metadata"]["name"]}': p
             for p in initial_resources["items"]
@@ -327,10 +329,17 @@ class ResourceReflector(LoggingConfigurable):
                 method = partial(
                     getattr(self.api, self.list_method_name), _preload_content=False
                 )
-                self.log.debug(f"_watch_and_update watch {self.kind} {self.list_method_name} {watch_args}")
+                self.log.debug(
+                    f"_watch_and_update watch {self.kind} {self.list_method_name} {watch_args}"
+                )
                 async with w.stream(method, **watch_args) as stream:
                     async for watch_event in stream:
-                        self.log.debug(f"_watch_and_update watch_event: {watch_event}")
+                        summary = {
+                            "type": watch_event["type"],
+                            "kind": watch_event["object"]["kind"],
+                            "name": watch_event["object"]["metadata"].get("name"),
+                        }
+                        self.log.debug(f"_watch_and_update watch_event: {summary}")
                         # in case of timeout_seconds, the w.stream just exits (no exception thrown)
                         # -> we stop the watcher and start a new one
                         # Remember that these events are k8s api related WatchEvents
