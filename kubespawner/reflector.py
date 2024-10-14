@@ -161,6 +161,8 @@ class ResourceReflector(LoggingConfigurable):
 
     _stopping = Bool(False)
 
+    _count = Int(0)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -289,7 +291,7 @@ class ResourceReflector(LoggingConfigurable):
         # fetch Any (=api-server cached) data from apiserver on initial fetch
         # see https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions
         # for more information
-        resource_version = "0"
+        resource_version = "999999999"
 
         cur_delay = 0.1
 
@@ -310,6 +312,12 @@ class ResourceReflector(LoggingConfigurable):
             w = watch.Watch()
             try:
                 resource_version = await self._list_and_update(resource_version)
+                self._count += 1
+                if self._count % 10 == 0:
+                    resource_version = "888888888"
+                    self.log.warning(
+                        f"Deliberately set resource_version={resource_version} (count={self._count})"
+                    )
                 watch_args = {
                     "label_selector": self.label_selector,
                     "field_selector": self.field_selector,
