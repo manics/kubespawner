@@ -639,7 +639,7 @@ class KubeSpawner(Spawner):
 
         If True, once the PVC has been created, its name will be remembered and reused
         and changing pvc_name_template will have no effect on servers that have previously mounted PVCs.
-        If False, changing pvc_name_template or slug_scheme may detatch servers from their PVCs.
+        If False, changing pvc_name_template or slug_scheme may detach servers from their PVCs.
 
         `False` is the behavior of kubespawner prior to version 7.
         """,
@@ -1751,8 +1751,8 @@ class KubeSpawner(Spawner):
           settings. Each value can be either the final value to change or a callable that
           take the `KubeSpawner` instance as parameter and return the final value. This can
           be further overridden by 'profile_options'
-          If the traitlet being overriden is a *dictionary*, the dictionary
-          will be *recursively updated*, rather than overriden. If you want to
+          If the traitlet being overridden is a *dictionary*, the dictionary
+          will be *recursively updated*, rather than overridden. If you want to
           remove a key, set its value to `None`
         - `profile_options`: A dictionary of sub-options that allow users to further customize the
           selected profile. By default, these are rendered as a dropdown with the label
@@ -1800,8 +1800,8 @@ class KubeSpawner(Spawner):
               and value can be either the final value or a callable that returns the final
               value when called with the spawner instance as the only parameter. The callable
               may be async.
-              If the traitlet being overriden is a *dictionary*, the dictionary
-              will be *recursively updated*, rather than overriden. If you want to
+              If the traitlet being overridden is a *dictionary*, the dictionary
+              will be *recursively updated*, rather than overridden. If you want to
               remove a key, set its value to `None`
 
         kubespawner setting overrides work in the following manner, with items further in the
